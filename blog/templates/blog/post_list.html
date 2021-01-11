@@ -9,7 +9,8 @@
                 <p>published: {{ post.published_date }}</p>
             </div>
                             
-            <p>{{ post.text|linebreaksbr }}</p>
+            <p>{{ post.text|truncatechars:200 }}</p>
+            <a href="{% url 'post_detail' pk=post.pk %}">Comments: {{ post.approved_comments.count }}      Likes: {{post.get_total_likes}}</a>
         </div>
     {% endfor %}
 {% endblock %}

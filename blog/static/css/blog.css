@@ -30,6 +30,10 @@ h1, h2, h3, h4 {
     float: right;
 }
 
+.right {
+    text-align: right;
+}
+
 .post-form textarea, .post-form input {
     width: 100%;
 }
@@ -50,4 +54,8 @@ h1, h2, h3, h4 {
 }
 body {
     padding-left: 20px;
+}
+
+.comment {
+    margin: 20px 0px 20px 20px;
 }
