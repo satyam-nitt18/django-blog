@@ -11,12 +11,12 @@
                 created: {{ post.created_date }}
             </div>
             {% if user.is_superuser %}
-                <a href="{% url 'post_publish' pk=post.pk %}" class="btn btn-default">Publish</a>
+                <a href="{% url 'blog:post_publish' pk=post.pk %}" class="btn btn-default" style="position: absolute; right: 105">Publish</a>
             {% endif %}    
         {% endif %}
         {% if user == post.author or user.is_superuser %}
-            <a class="btn btn-default" href="{% url 'post_edit' pk=post.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
-            <a class="btn btn-default" href="{% url 'post_remove' pk=post.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+            <a class="btn btn-default" href="{% url 'blog:post_edit' pk=post.pk %}" style="position: absolute; right: 50; top: 22.5;"><span class="glyphicon glyphicon-pencil"></span></a>
+            <a class="btn btn-default" href="{% url 'blog:post_remove' pk=post.pk %}" style="position: absolute; right: 0; top: 22.5;"><span class="glyphicon glyphicon-remove"></span></a>
         {% endif %}
         <h2> {{post.title}}</h2>
         <br>
@@ -24,7 +24,7 @@
     </div>
     <div class="like">
         {% if user.is_authenticated %}
-            <form action="{% url 'post_like' pk=post.pk %}" method="POST">
+            <form action="{% url 'blog:post_like' pk=post.pk %}" method="POST">
                 {% csrf_token %}
                 {% if is_user_liked %}
                     <button type="submit" class="btn btn-default">Unlike</button>
@@ -38,20 +38,23 @@
         <strong class="text-secondary">{{ post.get_total_likes }} Like{{post.get_total_likes|pluralize}}</strong>
     </div>
     <hr>
-    <a class="btn btn-default" href="{% url 'add_comment_to_post' pk=post.pk %}">Add comment</a>
+    <a class="btn btn-default" href="{% url 'blog:add_comment_to_post' pk=post.pk %}">Add comment</a>
     {% for comment in post.comments.all %}
         {% if user.is_authenticated or comment.approved_comment %}
         <div class="comment">
             <div class="date">{{ comment.created_date }}</div>
-            {% if not comment.approved_comment %}
-                <a href="{% url 'comment_approve' pk=comment.pk %}" class="btn btn-default"><span class="glyphicon glyphicon-ok"></span></a>
-                <a href="{% url 'comment_remove' pk=comment.pk %}" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></a>
+            {% if not comment.approved_comment and user.is_superuser %}
+                <a href="{% url 'blog:comment_approve' pk=comment.pk %}" class="btn btn-default" style="position: absolute; right: 50;"><span class="glyphicon glyphicon-ok"></span></a>
+                <a href="{% url 'blog:comment_remove' pk=comment.pk %}" class="btn btn-default" style="position: absolute; right: 0;"><span class="glyphicon glyphicon-remove"></span></a>
             {% endif %}
             <strong>{{ comment.author }}</strong>
             <p>{{ comment.text|linebreaks}}</p>
         </div>
         {% endif %}
     {% empty %}
+        <br>
+        <br>
         <p>No comments here yet.</p>
     {% endfor %}
 {% endblock %}
+

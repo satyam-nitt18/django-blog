@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-from .models import Post, Comment, Profile
+from .models import Post, Comment, Profile, Index
 from .forms import PostForm, CommentForm, SignUpForm
 from django.contrib.auth import login
 from django.contrib.auth.models import User
@@ -9,6 +9,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
+from django.views import generic
 from .tokens import account_activation_token
 
 # Create your views here.
@@ -29,7 +30,7 @@ def post_new(request):
             post.author = request.user
             post.created_date = timezone.now()
             post.save()
-            return redirect('post_detail', pk=post.pk)
+            return redirect('blog:post_detail', pk=post.pk)
     else:
         form = PostForm()
     return render(request, 'blog/post_edit.html', {'form': form})
@@ -44,7 +45,7 @@ def post_edit(request, pk):
             post.author=request.user
             post.created_date=timezone.now()
             post.save()
-            return redirect('post_detail', pk=post.pk)
+            return redirect('blog:post_detail', pk=post.pk)
     else:
         form=PostForm(instance=post)
     return render(request, 'blog/post_edit.html', {'form':form})
@@ -58,13 +59,13 @@ def post_draft_list(request):
 def post_publish(request, pk):
     post=get_object_or_404(Post, pk=pk)
     post.publish()
-    return redirect('post_detail', pk=pk)
+    return redirect('blog:post_detail', pk=pk)
 
 @login_required
 def post_remove(request, pk):
     post=get_object_or_404(Post, pk=pk)
     post.delete()
-    return redirect('post_list')
+    return redirect('blog:post_list')
 
 def add_comment_to_post(request, pk):
     post=get_object_or_404(Post, pk=pk)
@@ -74,7 +75,7 @@ def add_comment_to_post(request, pk):
             comment = form.save(commit=False)
             comment.post=post
             comment.save()
-            return redirect('post_detail', pk=post.pk)
+            return redirect('blog:post_detail', pk=post.pk)
     else:
         form = CommentForm()
     return render(request, 'blog/add_comment_to_post.html', {'form': form})
@@ -83,13 +84,13 @@ def add_comment_to_post(request, pk):
 def comment_approve(request, pk):
     comment=get_object_or_404(Comment, pk=pk)
     comment.approve()
-    return redirect('post_detail', pk=comment.post.pk)
+    return redirect('blog:post_detail', pk=comment.post.pk)
 
 @login_required
 def comment_remove(request, pk):
     comment=get_object_or_404(Comment, pk=pk)
     comment.delete()
-    return redirect('post_detail', pk=comment.post.pk)
+    return redirect('blog:post_detail', pk=comment.post.pk)
 
 def signup(request):
     #try:
@@ -113,7 +114,7 @@ def signup(request):
                 'token': account_activation_token.make_token(user),
             })
             user.email_user(subject, message)
-            return redirect('account_activation_sent')
+            return redirect('blog:account_activation_sent')
     else:
         form=SignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
@@ -133,9 +134,9 @@ def activate(request, uidb64, token):
         user.profile.email_confirmed=True
         user.save()
         login(request, user)
-        return redirect('post_list')
+        return redirect('blog:post_list')
     else:
-        return render(request, 'account_activation_invalid.html')
+        return render(request, 'blog/account_activation_invalid.html')
 
 @login_required
 def PostLike(request, pk):
@@ -144,4 +145,41 @@ def PostLike(request, pk):
         post.likes.remove(request.user)
     else:
         post.likes.add(request.user)
-    return redirect('post_detail', pk=post.pk)
+    return redirect('blog:post_detail', pk=post.pk)
+
+def SearchListView(request):
+    
+    word=request.GET.get('q')
+    index=Index()
+    index.create()
+    posts=index.find(word)
+    buffer_text=""
+    if (word.strip()=='') or (len(word)>100) or (len(word)<3):
+            buffer_text="Search text should be from 3 to 100 characters."
+    elif len(posts)==0:
+        buffer_text="Nothing found"
+    
+    return render(request, 'blog/post_draft_list.html', {'posts': posts, 'buffer_text':buffer_text})
+
+'''
+class SearchListView(generic.ListView):
+    model=Post
+    context_object_name='posts'
+    template_name='blog/post_draft_list.html'
+
+    def get_context_data(self, **kwargs):
+        context=super(SearchListView, self).get_context_data()
+        word=self.request.GET.get('q')
+        context['search_text']=word
+
+        if (len(word)<1) or (len(word)>100):
+            context['text']="Search text should be from 3 to 100 characters."
+        else:
+            posts=Index.find(word)
+            if posts:
+                context['posts']=posts 
+                context['query']=word
+            else:
+                context['text']="Nothing found"
+        return context
+'''

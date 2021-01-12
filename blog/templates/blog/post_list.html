@@ -2,16 +2,40 @@
 
 {% block content %}
     {% for post in posts %}
-        <div class="post">
-                
-            <h2><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h2>
-            <div class="date">
-                <p>published: {{ post.published_date }}</p>
-            </div>
-                            
-            <p>{{ post.text|truncatechars:200 }}</p>
-            <a href="{% url 'post_detail' pk=post.pk %}">Comments: {{ post.approved_comments.count }}      Likes: {{post.get_total_likes}}</a>
+    <article class="media content-section">
+        <div style="display:inline-block; vertical-align:top;">
+            <img class="rounded-circle article-img" src="Satyam.jpeg">
         </div>
+        <div class="article-metadata" style="display: inline-block; vertical-align: bottom;">
+            <h5 class="text-muted">Author: {{ post.author}}</h5>
+            <strong class="text-muted">Published: {{ post.published_date}}</strong>
+        </div>
+        <div class="media-body">
+            <h2><a href="{% url 'blog:post_detail' pk=post.pk %}">{{ post.title }}</a></h2>
+            <br>
+         </div>               
+        <p>{{ post.text|truncatechars:200 }}</p>
+        <a href="{% url 'blog:post_detail' pk=post.pk %}">Comments: {{ post.approved_comments.count }}      Likes: {{post.get_total_likes}}</a>
+    
+    </article>
     {% endfor %}
 {% endblock %}
+
+<!--
+<article class="media content-section">
+        <img class="rounded-circle article-img" src="Satyam.jpeg">
+        <div class="media-body">
+          <div class="article-metadata">
+            <a class="mr-2" href="{% url 'user_posts' post.author.username %}">{{ post.author }}</a>
+            <small class="text-muted">Author: {{ post.author}}</small>
+            <small class="text-muted">Published: {{ post.published_date}}</small>
+          </div>
+        <h2><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h2>
+          <p class="article-content">{{ post.text|truncatechars:200 }}</p>
+        </div>
+        <div>
+            <a href="{% url 'post_detail' pk=post.pk %}">Comments: {{ post.approved_comments.count }}      Likes: {{post.get_total_likes}}</a>
+        </div>
+    </article>
+-->
     

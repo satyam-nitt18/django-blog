@@ -2,10 +2,21 @@
 
 {% block content %}
     {% for post in posts %}
-        <div class="post">
-            <h2><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h2>
-            <p class="date">created: {{ post.created_date|date:'d-m-Y' }}</p>
+    <article class="media content-section">
+        <div style="display:inline-block; vertical-align:top;">
+            <img class="rounded-circle article-img" src="Satyam.jpeg">
+        </div>
+        <div class="article-metadata" style="display: inline-block; vertical-align: bottom;">
+            <h5 class="text-muted">Author: {{ post.author}}</h5>
+            <strong class="text-muted">Created: {{ post.created_date}}</strong>
+        </div>
+        <div class="media-body">
+            <h2><a href="{% url 'blog:post_detail' pk=post.pk %}">{{ post.title }}</a></h2>
+            <br>
             <p>{{ post.text|truncatechars:200 }}</p>
         </div>
+    </article>
+    {% empty %}
+        <strong>{{buffer_text}}</strong>
     {% endfor %}
 {% endblock %}

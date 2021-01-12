@@ -5,6 +5,14 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.exceptions import ObjectDoesNotExist
+from re import sub
+
+def serialize_url(url):
+    return str.lower(sub(r'[^a-zA-Zа-яА-Я0-9 ]', r'', url.replace("-", " ")).replace(" ", "-"))
+
+
+def split_str(string):
+    return set(str.upper(sub(r'[^a-zA-Zа-яА-Я0-9 ]', r'', string).replace("  ", " ")).split(" "))
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -58,6 +66,50 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.text
+
+class Index(models.Model):
+    word=models.CharField(max_length=100)
+    post=models.ForeignKey(Post, on_delete=models.CASCADE, null=True)
+
+    def create(self):
+        posts=Post.objects.all()
+        for post in posts:
+            self.add(post)
+            print("Indexes for {0} ({1}) created".format(post, post.pk))
+        print("All indexes created")
+    
+    @classmethod
+    def add(ind, post):
+        words=split_str(post.text + " "+ post.title)
+        for word in words:
+            if len(word)>2:
+                if len(ind.objects.filter(word=word, post=post))<1:
+                    ind.objects.create(word=word, post=post)
+
+    def delete(self):
+        self.objects.all().delete()
+        print("All indexes deleted")
+
+    @staticmethod
+    def find(search_request):
+        search_words=split_str(search_request)
+        posts_pk_list=[]
+
+        
+        for word in search_words:
+            pk_list=set([index.post.pk for index in Index.objects.filter(word=word)])
+            if pk_list:
+                posts_pk_list.append(pk_list)
+            else:
+                pass
+        
+        if posts_pk_list:
+            intersection_pk=posts_pk_list[0]
+            for post_pk in range(len(posts_pk_list)-1):
+                intersection_pk=posts_pk_list[post_pk] & posts_pk_list[post_pk+1]
+            return [Post.objects.get(pk=pk) for pk in intersection_pk]
+        else:
+            return []
 
 
 
