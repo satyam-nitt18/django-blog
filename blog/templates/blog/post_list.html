@@ -4,10 +4,10 @@
     {% for post in posts %}
     <article class="media content-section">
         <div style="display:inline-block; vertical-align:top;">
-            <img class="rounded-circle article-img" src="Satyam.jpeg">
+            <img src="{{post.author.profile.image.url}}" style="width: 65px; height: 65px; margin-right: 16px; border-radius: 50%; object-fit: cover;">
         </div>
         <div class="article-metadata" style="display: inline-block; vertical-align: bottom;">
-            <h5 class="text-muted">Author: {{ post.author}}</h5>
+            <h5 class="text-muted">Author: <a href="{% url 'blog:user_detail' username=post.author.username %}"> {{post.author}}</a></h5>
             <strong class="text-muted">Published: {{ post.published_date}}</strong>
         </div>
         <div class="media-body">

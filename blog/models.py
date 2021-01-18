@@ -6,6 +6,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.exceptions import ObjectDoesNotExist
 from re import sub
+from django.core.validators import RegexValidator
 
 def serialize_url(url):
     return str.lower(sub(r'[^a-zA-Zа-яА-Я0-9 ]', r'', url.replace("-", " ")).replace(" ", "-"))
@@ -16,7 +17,16 @@ def split_str(string):
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    subscribed=models.BooleanField(default=False)
     email_confirmed=models.BooleanField(default=False)
+    image = models.ImageField(upload_to='images/', default="default_profile.png")
+    date_of_birth=models.DateField(blank=True, default="2000-01-01", null=True)
+
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 12 digits allowed.")
+    mobile = models.CharField(validators=[phone_regex], max_length=12, blank=True) # validators should be a list
+
+    description=models.CharField(max_length=100, default="You can contact me through my mail.", blank=True)
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -53,6 +63,12 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+@receiver(post_save, sender=Post)
+def create_post(sender, instance, created, **kwargs):
+        if created:
+            for subscriber in BlogSubscriber.objects.all():
+                Notification.objects.create(subscriber=subscriber.blog_subscriber, post=instance)
+
 class Comment(models.Model):
     post = models.ForeignKey('blog.Post', on_delete=models.CASCADE, related_name='comments')
     author = models.CharField(max_length=200)
@@ -66,6 +82,21 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.text
+
+@receiver(post_save, sender=Comment)
+def create_comment(sender, instance, created, **kwargs):
+        if created:
+            for subscriber in BlogSubscriber.objects.all():
+                Notification.objects.create(subscriber=subscriber.blog_subscriber, comment=instance)
+
+class BlogSubscriber(models.Model):
+    blog_subscriber=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+class Notification(models.Model):
+    subscriber=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='notifications')
+    post=models.ForeignKey(Post, on_delete=models.CASCADE, null=True)
+    comment=models.ForeignKey(Comment, on_delete=models.CASCADE, null=True)
+    status=models.BooleanField(default=False)
 
 class Index(models.Model):
     word=models.CharField(max_length=100)

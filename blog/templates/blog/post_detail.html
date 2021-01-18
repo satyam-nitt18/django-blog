@@ -19,8 +19,12 @@
             <a class="btn btn-default" href="{% url 'blog:post_remove' pk=post.pk %}" style="position: absolute; right: 0; top: 22.5;"><span class="glyphicon glyphicon-remove"></span></a>
         {% endif %}
         <h2> {{post.title}}</h2>
+        <hr>
         <br>
-        <p>{{ post.text|linebreaksbr }}</p>
+        <div class="content-section">
+            <p>{{ post.text|linebreaksbr }}</p>
+        </div>
+        
     </div>
     <div class="like">
         {% if user.is_authenticated %}
@@ -49,6 +53,7 @@
             {% endif %}
             <strong>{{ comment.author }}</strong>
             <p>{{ comment.text|linebreaks}}</p>
+            <hr>
         </div>
         {% endif %}
     {% empty %}

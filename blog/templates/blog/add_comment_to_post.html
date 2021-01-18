@@ -2,6 +2,9 @@
 
 {% block content %}
     <h2>New comment</h2>
+    <br>
+    <p><strong>Author: </strong>{{request.user.username}}</p>
+    <br>
     <form method="POST" class="post-form">
         {% csrf_token %}
         {{ form.as_p }}

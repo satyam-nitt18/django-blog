@@ -1,0 +1,67 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    <div id="main" role="main">
+        <div class="row">
+                <h1>Profile Info</h1>
+                <hr>
+                
+                    <div class="story-teaser_image" style="position:relative; float:left">
+                        <img src="{{user.profile.image.url}}" style="width: 250px; height:246px;">
+                    </div>
+                    <div class="story-details story-teaser_text" style="position: relative;float:right;">
+                        {% if messages %}
+                            <ul class="messages">
+                                {% for message in messages %}
+                                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %} style="color: black; font-size: large;">{{message}}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        <br>
+                        <h3 class="heading-standard">
+                            <a href="{% url 'blog:user_detail' username=user.username %}">
+                                {{ user.username }}
+                            </a>
+                        </h3>
+                        <div style="width:400px">
+                            <p>{% if user.profile.subscribed %}<small>Subscribed</small>{% endif %}</p>
+                        </div>
+                        <p><strong>Date of Birth - </strong> {{ user.profile.date_of_birth }}</p>
+                        <p><strong>Mobile - </strong> {{user.profile.mobile}}</p>
+                        <p><strong>EmailID - </strong> {{ user.email }}</p>
+                        <p><strong>Bio - </strong> {{user.profile.description}}</p>
+                        {% if user == request.user %}
+                            <br>
+                            <p><a href="{% url 'blog:password_change' %}" class="btn btn-outline-danger" role="button">Change password</a></p>
+                            <p><a href="{% url 'blog:user_edit' %}" class="btn btn-outline-danger" role="button">Edit profile</a></p>
+                        {% endif %}
+                    </div>
+            
+    
+        </div>
+        <hr>
+    {% if posts %}
+        <div style="margin-top:100px;margin-bottom:100px;font-size:20px">
+            <h3>{{ user.username }}'s articles:</h3><br>
+            {% for post in posts %}
+            <article class="media content-section">
+                <div style="display:inline-block; vertical-align:top;">
+                    <img src="{{user.profile.image.url}}" style="width: 65px; height: 65px; margin-right: 16px; border-radius: 50%; object-fit: cover;">
+                </div>
+                <div class="article-metadata" style="display: inline-block; vertical-align: bottom;">
+                    <h5 class="text-muted">Author: {{ post.author}}</h5>
+                    <strong class="text-muted">Published: {{ post.published_date}}</strong>
+                </div>
+                <div class="media-body">
+                    <h2><a href="{% url 'blog:post_detail' pk=post.pk %}">{{ post.title }}</a></h2>
+                    <br>
+                 </div>               
+                <p>{{ post.text|truncatechars:200 }}</p>
+                <a href="{% url 'blog:post_detail' pk=post.pk %}">Comments: {{ post.approved_comments.count }}      Likes: {{post.get_total_likes}}</a>
+            
+            </article>
+            {% endfor %}
+        </div>
+    {% endif %}
+    </div>
+{% endblock %}

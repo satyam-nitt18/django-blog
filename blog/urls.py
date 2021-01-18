@@ -1,6 +1,5 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
-
 
 urlpatterns = [
     path('', views.post_list, name='post_list'),
@@ -18,4 +17,12 @@ urlpatterns = [
     path('account_activation_sent/', views.account_activation_sent, name='account_activation_sent'),
     path('activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/', views.activate, name='activate'),
     path('search/', views.SearchListView, name='search_results'),
+    path('subscribe/', views.SubscribeOnBlogNotificationsView, name='subscribe'),
+    path('unsubscribe/', views.UnsubscribeOnBlogNotificationsView, name='unsubscribe'),
+    path('notification_delete/<int:pk>/', views.NotificationDeleteView, name='notification_delete'),
+    path('user_detail/(?P<username>[\w.@+-]+)/', views.user_detail, name='user_detail'),
+    path('password_change/', views.password_change, name='password_change'),
+    path('user_edit/', views.user_edit, name='user_edit'),
+    
+
 ]
