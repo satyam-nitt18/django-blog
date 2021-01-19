@@ -17,10 +17,9 @@ from django.http import HttpResponseRedirect
 from rest_framework import viewsets
 from rest_framework import permissions
 from .serializers import UserSerializer, PostSerializer
+
 from email.mime.multipart import MIMEMultipart
-
 from email.mime.text import MIMEText
-
 import smtplib
 
 USER_EMAIL='satyam10180179@gmail.com'
