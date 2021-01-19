@@ -17,6 +17,14 @@ from django.http import HttpResponseRedirect
 from rest_framework import viewsets
 from rest_framework import permissions
 from .serializers import UserSerializer, PostSerializer
+from email.mime.multipart import MIMEMultipart
+
+from email.mime.text import MIMEText
+
+import smtplib
+
+USER_EMAIL='satyam10180179@gmail.com'
+USER_PASSWORD='pyCloud@111'
 
 # Create your views here.
 def post_list(request):
@@ -132,15 +140,37 @@ def signup(request):
             user.is_superuser=False
             user.is_active=False
             user.save()
+
+            msg=MIMEMultipart()
+            msg['from']=USER_EMAIL
+            msg['to']=user.email
             current_site=get_current_site(request)
-            subject='Activate your Django Blog Account'
+            msg['subject']='Activate your Django Blog Account'
             message=render_to_string('blog/account_activation_email.html', {
                 'user': user,
                 'domain': current_site.domain,
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': account_activation_token.make_token(user),
             })
-            user.email_user(subject, message)
+            msg.attach(MIMEText(message, 'plain'))
+            print('Sending mail..')
+            try:
+                # Creating SMTP Instance 
+                server = smtplib.SMTP(host='smtp.gmail.com',port=587)
+                # Create Secure Transport Layer Connection
+                server.starttls()
+                # Login to your Account
+                server.login(USER_EMAIL, USER_PASSWORD)
+                # Sending Messsage to the Client
+                server.sendmail(USER_EMAIL, msg['to'], msg.as_string())
+                print('%u2018Message Sent Successfully..... ' )
+            
+            except Exception as e :
+                print(f'Exception Occured ! \n {e}')
+            finally:
+                # Close Connection
+                server.quit()
+                
             return redirect('blog:account_activation_sent')
     else:
         form=SignUpForm()
