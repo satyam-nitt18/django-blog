@@ -18,8 +18,10 @@
             <a class="btn btn-default" href="{% url 'blog:post_edit' pk=post.pk %}" style="position: absolute; right: 50; top: 22.5;"><span class="glyphicon glyphicon-pencil"></span></a>
             <a class="btn btn-default" href="{% url 'blog:post_remove' pk=post.pk %}" style="position: absolute; right: 0; top: 22.5;"><span class="glyphicon glyphicon-remove"></span></a>
         {% endif %}
+        
         <h2> {{post.title}}</h2>
-        <hr>
+        <h5 style="margin-top: 20px;">By <a href="{% url 'blog:user_detail' username=post.author.username %}"> {{post.author}}</a></h5>
+        
         <br>
         <div class="content-section">
             <p>{{ post.text|linebreaksbr }}</p>

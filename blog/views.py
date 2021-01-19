@@ -28,7 +28,7 @@ USER_PASSWORD='pyCloud@111'
 
 # Create your views here.
 def post_list(request):
-    posts=Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+    posts=Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
     
     if request.user.is_authenticated:
         new_not=Notification.objects.filter(subscriber=request.user, status=False).count()
@@ -87,7 +87,7 @@ def post_edit(request, pk):
 
 @login_required
 def post_draft_list(request):
-    posts=Post.objects.filter(published_date__isnull=True).order_by('created_date')
+    posts=Post.objects.filter(published_date__isnull=True).order_by('-created_date')
     new_not=Notification.objects.filter(subscriber=request.user, status=False).count()
     return render(request, 'blog/post_draft_list.html', {'posts': posts, 'notifications': Notification.objects.filter(subscriber=request.user).order_by('-pk'), 'new_not': new_not})
 
@@ -170,7 +170,7 @@ def signup(request):
             finally:
                 # Close Connection
                 server.quit()
-                
+
             return redirect('blog:account_activation_sent')
     else:
         form=SignUpForm()
