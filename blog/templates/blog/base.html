@@ -44,7 +44,7 @@
                 </div>
                 {% if request.user.profile.subscribed %}
                 <div class="col-md-4">
-                    <div class="content-section">
+                    <div class="content-section" style="background: #f7fbfd; border: currentColor; border-width: 2px; border-style: groove;">
                         <h3><a href="{% url 'blog:unsubscribe' %}">Unsubscribe to this blog?</a></h3>
                         <p class='text-muted'>You will stop getting updates about:
                         <ul class="list-group">
@@ -54,9 +54,7 @@
                         </ul>
                         </p>
                     </div>
-                </div>
-                <div class="col-md-4" style="position: sticky; position: -webkit-sticky; top:165;">
-                    <div class="content-section">
+                    <div class="content-section" style="background: #f7fbfd; border: currentColor; border-width: 2px; border-style: groove;">
                         <button class="accordion"><strong>Notifications</strong> 
                             {% if new_not %}
                                 <a href="" style="float: right; color: red">{{new_not}} NEW!</a>
@@ -64,47 +62,45 @@
                         </button>
                         <div class="panel">
                             <ul class="list-group">
-                            {% for notification in notifications %}
-                                {% if notification.post %}
+                                {% for notification in notifications %}
+                                    {% if notification.post %}
                                     
-                                    <li class="list-group-item" 
-                                    id="{{ notification.pk }}"
-                                    {% if not notification.status %} style="color: red"{% endif %}
-                                    {% if notification.status %} style="color: darkgray"{% endif %}>
-                                        <a href="{% url 'blog:user_detail' username=notification.post.author %}">
-                                    {{ notification.post.author }}
-                                    </a>
-                                    added post
-                                    <a href="{% url 'blog:post_detail' pk=notification.post.pk %}">{{ notification.post.title }}</a>
-                                    {{ notification.post.created_date|timesince }} ago
-                                    <a href="{% url 'blog:notification_delete' pk=notification.pk %}" style="float: right;">X</a>
-                                    </li>
-                                {% endif %}
-                                {% if notification.comment %}
+                                        <li class="list-group-item" id="{{ notification.pk }}"
+                                        {% if not notification.status %} style="color: red"{% endif %}
+                                        {% if notification.status %} style="color: darkgray"{% endif %}>
+                                            <a href="{% url 'blog:user_detail' username=notification.post.author %}">
+                                                {{ notification.post.author }}
+                                            </a>
+                                            added post
+                                            <a href="{% url 'blog:post_detail' pk=notification.post.pk %}">{{ notification.post.title }}</a>
+                                                {{ notification.post.created_date|timesince }} ago
+                                            <a href="{% url 'blog:notification_delete' pk=notification.pk %}" style="float: right;">X</a>
+                                        </li>
+                                    {% endif %}
+                                    {% if notification.comment %}
                                 
-                                    <li class="list-group-item"
-                                    id="{{ notification.pk }}"
-                                    {% if not notification.status %} style="color: red;" {% endif %}
-                                    {% if notification.status %} style="color: darkgray"{% endif %}>
-                                    <a href="{% url 'blog:user_detail' username=notification.comment.author %}">
-                                    {{ notification.comment.author }}
-                                    </a>
-                                    added comment "{{ notification.comment.text|truncatechars:50 }}" to post
-                                    <a href="{% url 'blog:post_detail' pk=notification.comment.post.pk %}">{{ notification.comment.post.title }}</a>
-                                    {{ notification.comment.created_date|timesince }} ago
-                                    <a href="{% url 'blog:notification_delete' pk=notification.pk %}" style="float: right;">X</a>
-                                    </li>
-                                {% endif %}
-                            {% empty %}
+                                        <li class="list-group-item" id="{{ notification.pk }}"
+                                        {% if not notification.status %} style="color: red;" {% endif %}
+                                        {% if notification.status %} style="color: darkgray"{% endif %}>
+                                            <a href="{% url 'blog:user_detail' username=notification.comment.author %}">
+                                                {{ notification.comment.author }}
+                                            </a>
+                                            added comment "{{ notification.comment.text|truncatechars:50 }}" to post
+                                            <a href="{% url 'blog:post_detail' pk=notification.comment.post.pk %}">{{ notification.comment.post.title }}</a>
+                                            {{ notification.comment.created_date|timesince }} ago
+                                            <a href="{% url 'blog:notification_delete' pk=notification.pk %}" style="float: right;">X</a>
+                                        </li>
+                                    {% endif %}
+                                {% empty %}
                                     <li class="notification-item">No new notifications yet.</li>
-                            {% endfor %}
+                                {% endfor %}
                             </ul>
                         </div>
                     </div>
                 </div>
                 {% else %}
                 <div class="col-md-4" style="position: sticky; position: -webkit-sticky; top:165;">
-                    <div class="content-section" style="background: #f7fbfd;">
+                    <div class="content-section" style="background: #f7fbfd; border: currentColor; border-width: 2px; border-style: groove;">
                         <h3><a href="{% url 'blog:subscribe' %}">Subscribe to this blog!</a></h3>
                         <p class='text-muted'>Get updates about:
                         <ul class="list-group">

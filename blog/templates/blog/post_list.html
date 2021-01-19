@@ -2,7 +2,7 @@
 
 {% block content %}
     {% for post in posts %}
-    <article class="media content-section">
+    <article class="media content-section" style="background: #f7fbfd; border: currentColor; border-width: 2px; border-style: groove;">
         <div style="display:inline-block; vertical-align:top;">
             <img src="{{post.author.profile.image.url}}" style="width: 65px; height: 65px; margin-right: 16px; border-radius: 50%; object-fit: cover;">
         </div>

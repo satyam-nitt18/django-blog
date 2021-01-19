@@ -7,7 +7,7 @@
                 <hr>
                 
                     <div class="story-teaser_image" style="position:relative; float:left">
-                        <img src="{{user.profile.image.url}}" style="width: 250px; height:246px;">
+                        <img src="{{user.profile.image.url}}" style="width: 250px; height:246px; border: black; border-width: 2px; border-style: outset;">
                     </div>
                     <div class="story-details story-teaser_text" style="position: relative;float:right;">
                         {% if messages %}
@@ -42,9 +42,11 @@
         <hr>
     {% if posts %}
         <div style="margin-top:100px;margin-bottom:100px;font-size:20px">
-            <h3>{{ user.username }}'s articles:</h3><br>
+            <h1>{{ user.username }}'s articles:</h1>
+            <hr>
+            <br>
             {% for post in posts %}
-            <article class="media content-section">
+            <article class="media content-section" style="background: #f7fbfd;">
                 <div style="display:inline-block; vertical-align:top;">
                     <img src="{{user.profile.image.url}}" style="width: 65px; height: 65px; margin-right: 16px; border-radius: 50%; object-fit: cover;">
                 </div>
