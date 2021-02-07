@@ -4,9 +4,8 @@ Site with all the necessary tools for blogging, written in Django.
 
 ## Features:
 
-- [User Registration (Sign-in and Sign-up)](https://github.com/satyam-nitt18/django-blog/new/master?readme=1#user-registration-sign-in-and-sign-up)
+- [User Registration (Sign-in and Sign-up) and Change Password](https://github.com/satyam-nitt18/django-blog/new/master?readme=1#user-registration-sign-in-and-sign-up)
 - [Create, Publish, Edit & Delete Posts](https://github.com/satyam-nitt18/django-blog/new/master?readme=1#create-publish-edit--delete-posts)
-- [User Change Password](https://github.com/satyam-nitt18/django-blog/new/master?readme=1#user-change-password)
 - [Editable User profiles](https://github.com/satyam-nitt18/django-blog/new/master?readme=1#editable-user-profiles)
 - [Account Activation Link sent to Gmail using SMTP](https://github.com/satyam-nitt18/django-blog/new/master?readme=1#account-activation-link-sent-to-gmail-using-smtp)
 - [Likes and Comments](https://github.com/satyam-nitt18/django-blog/new/master?readme=1#likes-and-comments)
@@ -14,11 +13,13 @@ Site with all the necessary tools for blogging, written in Django.
 - [Notifications](https://github.com/satyam-nitt18/django-blog/new/master?readme=1#notifications)
 - [APIs using Django REST Framework](https://github.com/satyam-nitt18/django-blog/new/master?readme=1#apis-using-django-rest-framework)
 
-### User Registration (Sign-in and Sign-up):
+### User Registration (Sign-in and Sign-up) and Change Password:
+Django-crispy-forms filter has been applied to all the forms used in the site for sign-up, sign-in or editing profile to produce elegant division based fields.
 
 ### Create, Publish, Edit & Delete Posts:
-
-### User Change Password:
+Site guests are only allowed to view the detailed Posts.
+Creation, Editing and Deletion of Posts are allowed for Signed-in users (including Admin). A particular user cannot edit or delete others' posts. However they can comment on unpublished posts listed in the Drafts Section.
+Publish action is allowed for Admin alone. The admin decides whether to publish a particular post submitted by signed-up users (moving that post from the Drafts section to the main Home page) or edit or delete them. 
 
 ### Editable User profiles:
 Each user has his own personal page, which contains information about username, date of birth (set to a default value on first time Login) contact info (mobile number (optional) and email-ID, list of user's posts, short description and profile image.
@@ -26,8 +27,10 @@ All of which can be updated anytime.
 
 
 ### Account Activation Link sent to Gmail using SMTP:
+For user authentication and email validation, activation link is sent to the provided gmail account using Simple Mail Transfer Protocol. The account created on the Blog site cannot be accessed by the user without clicking on the activation link.
 
 ### Likes and Comments:
+Likes and comments model similar to any other social media is allowed only for signed-in users to encourage interaction (through comments) and appreciation (through likes) among bloggers.
 
 ### Custom Search using Inverted Indexing:
 Custom search engine based on inverted indexes. You can search for one word and whole sentences in random order.
